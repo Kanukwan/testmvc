@@ -24,6 +24,7 @@ class LandingPageState extends State<LandingPage> {
         )),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.purple,
         onPressed: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => ShowData()));
