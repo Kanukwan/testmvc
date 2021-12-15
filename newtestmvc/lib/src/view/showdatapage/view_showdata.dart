@@ -30,7 +30,7 @@ class ShowDataState extends StateMVC<ShowData> {
           : Container(
               color: Colors.purple[200],
               //widget page A
-              child: PageAWidget(listCats: con.listCatData!)),
+              child: PageAWidget(listCats: con.listCatData)),
       // [2]
       Container(
         color: Colors.purple[200],

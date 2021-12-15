@@ -26,12 +26,13 @@ class ControllerWidget extends ControllerMVC {
   }
 
   // GET data from static json file
-  void getJsonCats() async {
+  getJsonCats() async {
     await ConnectCatsAsset.convertAsset().then((data) {
       setState(() {
         isLoading = false;
         listCatData = data;
       });
+      // return listCatData;
     });
   }
 }
