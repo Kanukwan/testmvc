@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newtestmvc/src/models/cats_model.dart';
 import 'package:newtestmvc/src/service/connect_asset.dart';
 
@@ -8,15 +7,15 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends AppStatefulWidgetMVC {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
-  AppStateMVC createState() => View();
+  State createState() => _MyAppState();
 }
 
-class View extends AppStateMVC<MyApp> {
+class _MyAppState extends State<MyApp> {
   @override
-  Widget buildApp(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
         home: LandingPage(),
       );
 }
@@ -69,109 +68,16 @@ class ShowData extends StatefulWidget {
   ShowData({Key? key}) : super(key: key);
 
   @override
-  ShowDataState createState() => ShowDataState();
+  _ShowDataState createState() => _ShowDataState();
 }
 
-class ShowDataState extends StateMVC<ShowData> {
-  ShowDataState({Key? key}) : super(ControllerWidget()) {
-    con = controller as ControllerWidget;
-  }
-  // declare variable
-  late ControllerWidget con;
-
-  @override
-  Widget build(BuildContext context) {
-    // tab List
-    List<Widget?> _tabList = <Widget>[
-      // [1]
-      con.isLoading
-          ? Center(
-              child: CircularProgressIndicator(), // show circle loading
-            )
-          : Container(
-              color: Colors.purple[200],
-              //widget page A
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: con.listCatData.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Card(
-                          color: Colors.amber,
-                          elevation: 3, //shadow
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                    '${con.listCatData[index].title} : ${con.listCatData[index].subtitle}'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              )), // listCatData
-      // [2]
-      Container(
-        color: Colors.purple[200],
-      )
-    ];
-
-    // Main
-    return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.purple),
-      body: Center(
-        child: _tabList.elementAt(con.selectTabIndex!),
-      ),
-      // Nav Bar
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white70,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.bookOpen),
-            label: 'PAGE1',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.bookReader),
-            label: 'PAGE2',
-          ),
-        ],
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: Colors.purple,
-        currentIndex: con.selectTabIndex!,
-        onTap: con.onItemTapped,
-      ),
-    );
-  }
-}
-
-/* 
-
-  Controller
-
-*/
-class ControllerWidget extends ControllerMVC {
-  factory ControllerWidget([StateMVC? state]) =>
-      _this ??= ControllerWidget._(state);
-  ControllerWidget._(StateMVC? state) : super(state);
-  static ControllerWidget? _this;
+class _ShowDataState extends State<ShowData> {
 
   int? selectTabIndex = 0;
   bool isLoading = true;
   List<CatsAssets> listCatData = <CatsAssets>[];
 
-  @override
+    @override
   void initState() {
     super.initState();
     getJsonCats();
@@ -191,9 +97,82 @@ class ControllerWidget extends ControllerMVC {
         isLoading = false;
         listCatData = data;
       });
-      // return listCatData;
-      // return data;
     });
   }
-}
 
+  @override
+  Widget build(BuildContext context) {
+    // tab List
+    List<Widget?> _tabList = <Widget>[
+      // [1]
+      isLoading
+          ? Center(
+              child: CircularProgressIndicator(), // show circle loading
+            )
+          : Container(
+              color: Colors.purple[200],
+              //widget page A
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: listCatData.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Card(
+                          color: Colors.amber,
+                          elevation: 3, //shadow
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                    '${listCatData[index].title} : ${listCatData[index].subtitle}'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )), // listCatData
+      // [2]
+      Container(
+        color: Colors.purple[200],
+      )
+    ];
+
+    // Main
+    return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.purple),
+      body: Center(
+        child: _tabList.elementAt(selectTabIndex!),
+      ),
+      // Nav Bar
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white70,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.bookOpen),
+            label: 'PAGE1',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.bookReader),
+            label: 'PAGE2',
+          ),
+        ],
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.purple,
+        currentIndex: selectTabIndex!,
+        onTap: onItemTapped,
+      ),
+    );
+  }
+}
